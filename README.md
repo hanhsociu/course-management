@@ -1,58 +1,70 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🚀 Course Management System - Backend API Roadmap
+**Mục tiêu dự án:** Xây dựng hệ thống backend cho nền tảng học trực tuyến (mô hình Udemy basic). Tập trung vào kiến trúc RESTful API, tối ưu truy vấn cơ sở dữ liệu và xử lý logic nghiệp vụ phức tạp.
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Phase 1: Architecture Setup & Database Design 
+*Mục tiêu: Xây dựng nền tảng vững chắc, chuẩn hóa cấu trúc thư mục và database.*
 
-## About Laravel
+- [ ] **Task 1: Project Initialization**
+  - Khởi tạo project Laravel.
+  - Setup Git repository & tạo file `.gitignore` chuẩn.
+  - Cấu hình file `.env` cho Database.
+- [ ] **Task 2: Database Schema & Migrations**
+  - Tạo các bảng: `users`, `courses`, `lessons`, `enrollments`, `progresses`.
+  - Thiết lập **Foreign Keys** và quy tắc `onDelete('cascade')`.
+  - Thêm **Database Indexes** cho các trường thường xuyên tìm kiếm (vd: `course_id`, `user_id`).
+  - Thêm **Soft Deletes** cho `courses` và `lessons` để không mất dữ liệu lịch sử.
+- [ ] **Task 3: Eloquent Models & Relationships**
+  - Định nghĩa strict types và relationships (`hasMany`, `belongsTo`, `belongsToMany`).
+  - Áp dụng các scopes cơ bản (vd: `scopeActive()` cho khóa học).
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Phase 2: Authentication & Core API 
+*Mục tiêu: Xây dựng luồng xác thực bảo mật và API danh sách khóa học chuẩn REST.*
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- [ ] **Task 4: Authentication & Authorization**
+  - Cài đặt **Laravel Sanctum** để cấp phát API Token.
+  - Xây dựng API Login / Register.
+  - Thêm cột `role` (admin/user) vào bảng users.
+- [ ] **Task 5: Course Catalog API (Client)**
+  - API `GET /api/courses` với tính năng **Pagination**.
+  - Xử lý **Eager Loading** (`with('lessons')`) để khắc phục triệt để lỗi N+1 Query.
+  - Sử dụng **API Resources (JsonResource)** để format dữ liệu trả về chuẩn mực, giấu đi các trường nhạy cảm trong DB.
+  - Thêm tính năng Search & Lọc (Filter by category/status).
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Phase 3: Business Logic - Enrollment & Learning
+*Mục tiêu: Xử lý logic lõi của hệ thống, đảm bảo tính toàn vẹn dữ liệu.*
 
-## Learning Laravel
+- [ ] **Task 6: Course Enrollment System**
+  - API `POST /api/enrollments`.
+  - Sử dụng **FormRequests** để validate dữ liệu đầu vào.
+  - Áp dụng **Database Transactions** (`DB::transaction`) khi xử lý đăng ký để đảm bảo không bị rác dữ liệu nếu lỗi giữa chừng.
+- [ ] **Task 7: Middleware Security**
+  - Tạo Middleware `CheckEnrollment`: Chặn user không được gọi API lấy nội dung Lesson nếu chưa enroll.
+- [ ] **Task 8: Progress Tracking API**
+  - API `POST /api/progress`: Đánh dấu hoàn thành bài học.
+  - Áp dụng logic **Upsert** (Create or Update) để tránh duplicate record trong bảng `progresses`.
+  - Viết logic tính toán % hoàn thành khóa học (Sử dụng Eloquent Aggregate methods hoặc Raw SQL để tối ưu).
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Phase 4: Admin Management Panel API 
+*Mục tiêu: Cung cấp API quản trị an toàn và đầy đủ quyền hành.*
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- [ ] **Task 9: Admin Routing & Middleware**
+  - Tạo nhóm Route riêng biệt cho Admin.
+  - Cấu hình Middleware `CheckAdminRole`.
+- [ ] **Task 10: Course & Lesson CRUD (Admin)**
+  - Xây dựng đầy đủ API Create/Read/Update/Delete.
+  - Xử lý logic Upload ảnh thumbnail cho Course (Lưu trữ ở thư mục `storage` và tạo symlink).
+- [ ] **Task 11: User & Enrollment Dashboard API**
+  - API thống kê số lượng học viên, số lượt enroll.
+  - Xem chi tiết tiến độ học tập của từng user.
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+## Phase 5: Optimization & Quality Assurance
+*Mục tiêu: Biến project từ "chạy được" thành "chạy ngon" và sẵn sàng cho môi trường Production.*
 
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
-
-```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
-```
-
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+- [ ] **Task 12: Caching**
+  - Cấu hình Redis (hoặc File Cache).
+  - Áp dụng Cache cho API danh sách khóa học (`GET /api/courses`) vì dữ liệu này ít thay đổi nhưng đọc nhiều.
+- [ ] **Task 13: Error Handling & Logging**
+  - Chuẩn hóa Custom Exception (trả về JSON error response đồng nhất cho toàn hệ thống).
+  - Ghi log (Laravel Log) cho các thao tác quan trọng (vd: Có người đăng ký khóa học, Lỗi hệ thống).
+- [ ] **Task 14: API Documentation**
+  - Tích hợp Swagger hoặc viết file Postman Collection xịn sò đính kèm vào source code.
