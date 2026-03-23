@@ -1,0 +1,22 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes; // Thêm dòng này
+
+class Lesson extends Model
+{
+    use SoftDeletes;
+
+    protected $fillable = ['course_id', 'title', 'content', 'order'];
+
+    protected $casts = [
+        'order' => 'integer',
+    ];
+
+    public function course()
+    {
+        return $this->belongsTo(Course::class);
+    }
+}

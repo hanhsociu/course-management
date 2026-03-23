@@ -10,23 +10,21 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'email', 'password'])]
-#[Hidden(['password', 'remember_token'])]
+// app/Models/User.php
 class User extends Authenticatable
 {
-    /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable;
+    // Thêm trường role để sau này phân quyền [cite: 91, 92]
+    protected $fillable = ['name', 'email', 'password', 'role'];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array
+    // User có nhiều lượt đăng ký khóa học [cite: 17, 18]
+    public function enrollments()
     {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
+        return $this->hasMany(Enrollment::class);
+    }
+
+    // Helper method tiện lợi để check admin sau này
+    public function isAdmin()
+    {
+        return $this->role === 'admin';
     }
 }
