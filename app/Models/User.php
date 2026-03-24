@@ -26,4 +26,17 @@ class User extends Authenticatable
     {
         return $this->role === 'admin';
     }
+
+    // Một người dùng có thể đăng ký nhiều khóa học (Many-to-Many)
+    // Một người dùng có thể đăng ký nhiều khóa học (Many-to-Many)
+    public function enrolledCourses()
+    {
+        // Đổi 'course_user' thành 'enrollments' cho đồng bộ
+        return $this->belongsToMany(Course::class, 'enrollments')->withTimestamps();
+    }
+
+    public function completedLessons()
+    {
+        return $this->belongsToMany(Lesson::class, 'lesson_user')->withTimestamps();
+    }
 }

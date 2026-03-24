@@ -10,7 +10,8 @@ class Lesson extends Model
     use HasFactory;
     use SoftDeletes;
 
-    protected $fillable = ['course_id', 'title', 'content', 'order'];
+    // Thêm 'video_url' vào fillable để khung sẵn sàng nhận dữ liệu video
+    protected $fillable = ['course_id', 'title', 'content', 'order', 'video_url'];
 
     protected $casts = [
         'order' => 'integer',

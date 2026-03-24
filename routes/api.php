@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\CourseController;
 use App\Http\Controllers\Api\EnrollmentController;
 use App\Http\Controllers\Api\LessonController;
 use App\Http\Controllers\Api\ProgressController;
+use App\Http\Controllers\Api\AdminController;
 
 // ==========================================
 // 1. PUBLIC ROUTES (Không cần đăng nhập)
@@ -66,4 +67,23 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // API Lưu tiến độ học tập [cite: 78, 105]
     Route::post('/progress', [ProgressController::class, 'store']);
+});
+
+// ==========================================
+// 3. ADMIN ROUTES (Bắt buộc có Token + Quyền Admin)
+// ==========================================
+Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function () {
+
+    // CRUD Khóa học
+    Route::post('/courses', [CourseController::class, 'store']);
+    Route::put('/courses/{course}', [CourseController::class, 'update']);
+    Route::delete('/courses/{course}', [CourseController::class, 'destroy']);
+
+    // CRUD Bài học (THÊM MỚI Ở ĐÂY)
+    Route::post('/lessons', [LessonController::class, 'store']);            // Tạo bài học
+    Route::put('/lessons/{lesson}', [LessonController::class, 'update']);     // Sửa bài học
+    Route::delete('/lessons/{lesson}', [LessonController::class, 'destroy']); // Xóa bài học
+
+    // API Dashboard (MỚI)
+    Route::get('/dashboard', [AdminController::class, 'dashboard']);
 });

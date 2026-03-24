@@ -11,7 +11,12 @@ class Course extends Model
     use HasFactory;
     use SoftDeletes; // Kích hoạt tính năng xóa mềm
 
-    protected $fillable = ['title', 'description', 'price', 'status'];
+    protected $fillable = [
+        'title',
+        'description',
+        'price',
+        'status',
+    ];
 
     protected $casts = [
         'price' => 'decimal:2',
@@ -25,7 +30,6 @@ class Course extends Model
 
     public function users()
     {
-        return $this->belongsToMany(User::class, 'enrollments')
-            ->withTimestamps();
+        return $this->belongsToMany(User::class, 'enrollments')->withTimestamps();
     }
 }

@@ -21,7 +21,9 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
         // THÊM ĐOẠN ALIAS NÀY VÀO ĐÂY
         $middleware->alias([
+            'verified'     => \App\Http\Middleware\EnsureEmailIsVerified::class,
             'check.enroll' => \App\Http\Middleware\CheckEnrollment::class,
+            'admin'        => \App\Http\Middleware\CheckAdmin::class, // Đổi từ check.admin thành admin
         ]);
 
         //
