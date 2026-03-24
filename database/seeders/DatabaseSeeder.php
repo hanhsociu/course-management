@@ -6,6 +6,9 @@ use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
+use App\Models\Course;
+use App\Models\Lesson;
+
 class DatabaseSeeder extends Seeder
 {
     use WithoutModelEvents;
@@ -13,13 +16,11 @@ class DatabaseSeeder extends Seeder
     /**
      * Seed the application's database.
      */
-    public function run(): void
+    public function run()
     {
-        // User::factory(10)->create();
-
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        // Tạo 10 khóa học, mỗi khóa có 5 bài học
+        Course::factory(10)->has(
+            Lesson::factory()->count(5)
+        )->create();
     }
 }

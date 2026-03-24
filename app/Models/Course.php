@@ -4,9 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes; // Thêm dòng này
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Course extends Model
 {
+    use HasFactory;
     use SoftDeletes; // Kích hoạt tính năng xóa mềm
 
     protected $fillable = ['title', 'description', 'price', 'status'];

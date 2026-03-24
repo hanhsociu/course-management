@@ -2,21 +2,20 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Database\Factories\UserFactory;
-use Illuminate\Database\Eloquent\Attributes\Fillable;
-use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens; // BẮT BUỘC PHẢI CÓ DÒNG NÀY
 
-// app/Models/User.php
 class User extends Authenticatable
 {
-    // Thêm trường role để sau này phân quyền [cite: 91, 92]
+    // BẮT BUỘC PHẢI THÊM HasApiTokens VÀO ĐÂY
+    use HasApiTokens, HasFactory, Notifiable;
+
+    // Thêm trường role để sau này phân quyền
     protected $fillable = ['name', 'email', 'password', 'role'];
 
-    // User có nhiều lượt đăng ký khóa học [cite: 17, 18]
+    // User có nhiều lượt đăng ký khóa học
     public function enrollments()
     {
         return $this->hasMany(Enrollment::class);
