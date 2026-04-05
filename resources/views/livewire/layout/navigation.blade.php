@@ -16,17 +16,17 @@ new class extends Component
     }
 }; ?>
 
-<nav x-data="{ open: false }" class="bg-white border-b border-gray-100">
+<nav x-data="{ open: false }" class="sticky top-0 z-50 border-b border-slate-200/80 bg-white/75 backdrop-blur-lg supports-[backdrop-filter]:bg-white/65">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
             <div class="flex">
                 <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}" wire:navigate>
-                        <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
+                    <a href="{{ route('dashboard') }}" wire:navigate class="rounded-lg p-1 -m-1 transition hover:bg-slate-100/80">
+                        <x-application-logo class="block h-9 w-auto fill-current text-indigo-600" />
                     </a>
                 </div>
 
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                <div class="hidden items-center gap-1 sm:ms-10 sm:flex">
                     @auth
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" wire:navigate>
                         {{ __('Dashboard') }}
@@ -59,7 +59,7 @@ new class extends Component
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
                         <button
-                            class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
+                            class="inline-flex items-center gap-2 rounded-full border border-slate-200/90 bg-slate-50/80 px-3 py-1.5 text-sm font-medium text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/30">
                             <div x-data="{{ json_encode(['name' => auth()->user()?->name ?? 'User']) }}" x-text="name"
                                 x-on:profile-updated.window="name = $event.detail.name"></div>
 
@@ -87,13 +87,15 @@ new class extends Component
                     </x-slot>
                 </x-dropdown>
                 @else
-                <div class="space-x-4">
-                    <a href="{{ route('login') }}" class="text-sm text-gray-700 underline" wire:navigate>Đăng nhập</a>
+                <div class="flex items-center gap-2">
+                    <a href="{{ route('login') }}"
+                        class="rounded-full px-4 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900"
+                        wire:navigate>Đăng nhập</a>
 
                     <a href="{{ route('register') }}"
-                        class="ml-4 inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:border-indigo-900 focus:ring ring-indigo-300 disabled:opacity-25 transition ease-in-out duration-150"
+                        class="inline-flex items-center rounded-full bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm shadow-indigo-500/25 transition hover:bg-indigo-700 hover:shadow-md hover:shadow-indigo-500/30 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                         wire:navigate>
-                        Đăng ký thành viên
+                        Đăng ký
                     </a>
                 </div>
                 @endauth
@@ -101,7 +103,7 @@ new class extends Component
 
             <div class="-me-2 flex items-center sm:hidden">
                 <button @click="open = ! open"
-                    class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out">
+                    class="inline-flex items-center justify-center rounded-lg p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500/30">
                     <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
                         <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex"
                             stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -114,8 +116,8 @@ new class extends Component
         </div>
     </div>
 
-    <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
-        <div class="pt-2 pb-3 space-y-1">
+    <div :class="{'block': open, 'hidden': ! open}" class="hidden border-t border-slate-200/80 bg-white/95 backdrop-blur-md sm:hidden">
+        <div class="space-y-0.5 px-2 py-3">
             @auth
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" wire:navigate>
                 {{ __('Dashboard') }}
@@ -143,16 +145,16 @@ new class extends Component
             @endauth
         </div>
 
-        <div class="pt-4 pb-1 border-t border-gray-200">
+        <div class="border-t border-slate-200/80 px-2 py-4">
             @auth
-            <div class="px-4">
-                <div class="font-medium text-base text-gray-800"
+            <div class="px-3 pb-3">
+                <div class="text-base font-semibold text-slate-900"
                     x-data="{{ json_encode(['name' => auth()->user()?->name ?? '']) }}" x-text="name"
                     x-on:profile-updated.window="name = $event.detail.name"></div>
-                <div class="font-medium text-sm text-gray-500">{{ auth()->user()?->email }}</div>
+                <div class="text-sm text-slate-500">{{ auth()->user()?->email }}</div>
             </div>
 
-            <div class="mt-3 space-y-1">
+            <div class="space-y-0.5">
                 <x-responsive-nav-link :href="route('profile')" wire:navigate>
                     {{ __('Profile') }}
                 </x-responsive-nav-link>
@@ -164,11 +166,9 @@ new class extends Component
                 </button>
             </div>
             @else
-            <div class="px-4 py-2 space-y-2">
-                <a href="{{ route('login') }}" class="block text-base font-medium text-gray-600" wire:navigate>Đăng
-                    nhập</a>
-                <a href="{{ route('register') }}" class="block text-base font-medium text-indigo-600" wire:navigate>Đăng
-                    ký</a>
+            <div class="flex flex-col gap-2 px-3">
+                <a href="{{ route('login') }}" class="block rounded-xl px-3 py-2.5 text-base font-medium text-slate-700 hover:bg-slate-100" wire:navigate>Đăng nhập</a>
+                <a href="{{ route('register') }}" class="block rounded-xl bg-indigo-600 px-3 py-2.5 text-center text-base font-semibold text-white shadow-sm" wire:navigate>Đăng ký</a>
             </div>
             @endauth
         </div>

@@ -1,3 +1,42 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+    html {
+        scroll-behavior: smooth;
+    }
+
+    ::selection {
+        @apply bg-indigo-200/80 text-slate-900;
+    }
+}
+
+@layer components {
+    .app-shell {
+        @apply min-h-screen bg-slate-50 text-slate-800;
+        background-image:
+            radial-gradient(ellipse 900px 500px at 8% -8%, rgb(224 231 255 / 0.65), transparent),
+            radial-gradient(ellipse 700px 400px at 92% 0%, rgb(243 232 255 / 0.45), transparent),
+            radial-gradient(ellipse 600px 350px at 50% 100%, rgb(241 245 249 / 0.9), transparent);
+    }
+
+    .guest-shell {
+        @apply min-h-screen relative overflow-hidden flex flex-col sm:justify-center items-center p-4 sm:p-8 bg-slate-100 text-slate-900;
+    }
+
+    .guest-shell::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background:
+            radial-gradient(ellipse 85% 55% at 15% 5%, rgb(199 210 254 / 0.55), transparent 52%),
+            radial-gradient(ellipse 70% 45% at 88% 10%, rgb(233 213 255 / 0.4), transparent 48%),
+            radial-gradient(ellipse 60% 40% at 50% 100%, rgb(226 232 240 / 0.9), transparent 55%);
+        pointer-events: none;
+    }
+
+    .guest-card {
+        @apply relative z-10 w-full sm:max-w-md rounded-2xl border border-slate-200/90 bg-white/85 backdrop-blur-xl shadow-card p-8 sm:p-10 ring-1 ring-slate-200/60;
+    }
+}
