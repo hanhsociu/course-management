@@ -27,14 +27,30 @@ new class extends Component
                 </div>
 
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    @auth
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" wire:navigate>
                         {{ __('Dashboard') }}
                     </x-nav-link>
 
-                    <x-nav-link :href="route('admin.courses')" :active="request()->routeIs('admin.courses')"
+                    @if(auth()->user()->isAdmin())
+                    <x-nav-link :href="route('admin.courses')"
+                        :active="request()->routeIs('admin.courses') || request()->routeIs('admin.courses.lessons')"
                         wire:navigate>
                         {{ __('Khóa học') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('admin.users')" :active="request()->routeIs('admin.users')" wire:navigate>
+                        {{ __('Người dùng') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('admin.enrollments')"
+                        :active="request()->routeIs('admin.enrollments')" wire:navigate>
+                        {{ __('Đăng ký') }}
+                    </x-nav-link>
+                    @else
+                    <x-nav-link :href="route('my-courses')" :active="request()->routeIs('my-courses')" wire:navigate>
+                        {{ __('Khóa học của tôi') }}
+                    </x-nav-link>
+                    @endif
+                    @endauth
                 </div>
             </div>
 
@@ -71,7 +87,15 @@ new class extends Component
                     </x-slot>
                 </x-dropdown>
                 @else
-                <a href="{{ route('login') }}" class="text-sm text-gray-700 underline" wire:navigate>Log in</a>
+                <div class="space-x-4">
+                    <a href="{{ route('login') }}" class="text-sm text-gray-700 underline" wire:navigate>Đăng nhập</a>
+
+                    <a href="{{ route('register') }}"
+                        class="ml-4 inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:border-indigo-900 focus:ring ring-indigo-300 disabled:opacity-25 transition ease-in-out duration-150"
+                        wire:navigate>
+                        Đăng ký thành viên
+                    </a>
+                </div>
                 @endauth
             </div>
 
@@ -92,13 +116,31 @@ new class extends Component
 
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
+            @auth
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" wire:navigate>
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('admin.courses')" :active="request()->routeIs('admin.courses')"
+            @if(auth()->user()->isAdmin())
+            <x-responsive-nav-link :href="route('admin.courses')"
+                :active="request()->routeIs('admin.courses') || request()->routeIs('admin.courses.lessons')"
                 wire:navigate>
                 {{ __('Khóa học') }}
             </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('admin.users')" :active="request()->routeIs('admin.users')"
+                wire:navigate>
+                {{ __('Người dùng') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('admin.enrollments')"
+                :active="request()->routeIs('admin.enrollments')" wire:navigate>
+                {{ __('Đăng ký') }}
+            </x-responsive-nav-link>
+            @else
+            <x-responsive-nav-link :href="route('my-courses')" :active="request()->routeIs('my-courses')"
+                wire:navigate>
+                {{ __('Khóa học của tôi') }}
+            </x-responsive-nav-link>
+            @endif
+            @endauth
         </div>
 
         <div class="pt-4 pb-1 border-t border-gray-200">
@@ -122,8 +164,11 @@ new class extends Component
                 </button>
             </div>
             @else
-            <div class="px-4 py-2">
-                <a href="{{ route('login') }}" class="text-base font-medium text-gray-600" wire:navigate>Log in</a>
+            <div class="px-4 py-2 space-y-2">
+                <a href="{{ route('login') }}" class="block text-base font-medium text-gray-600" wire:navigate>Đăng
+                    nhập</a>
+                <a href="{{ route('register') }}" class="block text-base font-medium text-indigo-600" wire:navigate>Đăng
+                    ký</a>
             </div>
             @endauth
         </div>

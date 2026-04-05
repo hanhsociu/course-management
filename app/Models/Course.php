@@ -32,4 +32,22 @@ class Course extends Model
     {
         return $this->belongsToMany(User::class, 'enrollments')->withTimestamps();
     }
+
+    public function scopePublished($query)
+    {
+        return $query->where('status', 1);
+    }
+
+    public function scopeSearch($query, ?string $term)
+    {
+        $term = trim((string) $term);
+        if ($term === '') {
+            return $query;
+        }
+
+        return $query->where(function ($q) use ($term) {
+            $q->where('title', 'like', '%'.$term.'%')
+                ->orWhere('description', 'like', '%'.$term.'%');
+        });
+    }
 }

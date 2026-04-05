@@ -17,7 +17,12 @@
                         {{ $lesson->order }}
                     </span>
                     <div>
-                        <h4 class="font-bold text-gray-800">{{ $lesson->title }}</h4>
+                        <div class="flex flex-wrap items-center gap-2">
+                            <h4 class="font-bold text-gray-800">{{ $lesson->title }}</h4>
+                            @if($lesson->is_preview)
+                            <span class="text-[10px] font-bold uppercase bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded">Học thử</span>
+                            @endif
+                        </div>
                         <p class="text-sm text-gray-500">{{ Str::limit($lesson->content, 100) }}</p>
                     </div>
                 </div>
@@ -53,6 +58,10 @@
                         <textarea wire:model="content" rows="6"
                             class="w-full border-gray-300 rounded-lg shadow-sm"></textarea>
                     </div>
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" wire:model="is_preview" class="rounded border-gray-300 text-indigo-600">
+                        <span class="text-sm text-gray-700">Cho phép <strong>học thử</strong> (hiển thị công khai, chưa cần đăng ký)</span>
+                    </label>
                 </div>
                 <div class="mt-6 flex justify-end space-x-3">
                     <button wire:click="$set('isModalOpen', false)" class="px-4 py-2 text-gray-600">Hủy</button>

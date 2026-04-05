@@ -8,12 +8,21 @@ use Illuminate\Http\Request;
 
 class CourseController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        // Lấy danh sách khóa học active, mới nhất lên trước, phân trang 10 item/trang
-        $courses = Course::where('status', 1)
+        $request->validate([
+            'q' => 'nullable|string|max:255',
+            'per_page' => 'nullable|integer|min:1|max:50',
+        ]);
+
+        $perPage = min((int) $request->input('per_page', 10), 50);
+
+        $courses = Course::query()
+            ->published()
+            ->search($request->input('q'))
             ->latest()
-            ->paginate(10);
+            ->paginate($perPage)
+            ->withQueryString();
 
         return response()->json([
             'success' => true,

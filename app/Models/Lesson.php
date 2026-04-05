@@ -11,10 +11,11 @@ class Lesson extends Model
     use SoftDeletes;
 
     // Thêm 'video_url' vào fillable để khung sẵn sàng nhận dữ liệu video
-    protected $fillable = ['course_id', 'title', 'content', 'order', 'video_url'];
+    protected $fillable = ['course_id', 'title', 'content', 'order', 'video_url', 'is_preview'];
 
     protected $casts = [
         'order' => 'integer',
+        'is_preview' => 'boolean',
     ];
 
     public function course()

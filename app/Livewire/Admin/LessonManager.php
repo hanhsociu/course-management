@@ -10,6 +10,9 @@ class LessonManager extends Component
 {
     public $course; // Khóa học hiện tại
     public $lessonId, $title, $content, $order = 1;
+
+    public $is_preview = false;
+
     public $isModalOpen = false;
 
     // Nhận course_id từ URL hoặc từ Component cha
@@ -31,8 +34,27 @@ class LessonManager extends Component
 
     public function openModal()
     {
-        $this->reset(['title', 'content', 'order', 'lessonId']);
+        $this->reset(['title', 'content', 'order', 'lessonId', 'is_preview']);
+        $nextOrder = (int) ($this->course->lessons()->max('order') ?? 0) + 1;
+        $this->order = $nextOrder;
         $this->isModalOpen = true;
+    }
+
+    public function edit($id)
+    {
+        $lesson = Lesson::where('course_id', $this->course->id)->findOrFail($id);
+        $this->lessonId = $lesson->id;
+        $this->title = $lesson->title;
+        $this->content = $lesson->content;
+        $this->order = $lesson->order;
+        $this->is_preview = (bool) $lesson->is_preview;
+        $this->isModalOpen = true;
+    }
+
+    public function delete($id)
+    {
+        Lesson::where('course_id', $this->course->id)->findOrFail($id)->delete();
+        session()->flash('message', 'Đã xóa bài học.');
     }
 
     public function store()
@@ -43,16 +65,23 @@ class LessonManager extends Component
             'order' => 'required|numeric',
         ]);
 
-        // Lưu vào DB
-        \App\Models\Lesson::create([
-            'course_id' => $this->course->id, // Lấy ID từ khóa học hiện tại đang xem
+        $payload = [
             'title' => $this->title,
             'content' => $this->content,
             'order' => $this->order,
-        ]);
+            'is_preview' => (bool) $this->is_preview,
+        ];
 
-        session()->flash('message', 'Thêm bài học mới thành công!');
-        $this->isModalOpen = false; // Đóng cửa sổ lại
-        $this->reset(['title', 'content', 'order']); // Xóa trắng form để lần sau nhập tiếp
+        if ($this->lessonId) {
+            $lesson = Lesson::where('course_id', $this->course->id)->findOrFail($this->lessonId);
+            $lesson->update($payload);
+            session()->flash('message', 'Cập nhật bài học thành công!');
+        } else {
+            Lesson::create(array_merge($payload, ['course_id' => $this->course->id]));
+            session()->flash('message', 'Thêm bài học mới thành công!');
+        }
+
+        $this->isModalOpen = false;
+        $this->reset(['title', 'content', 'order', 'lessonId', 'is_preview']);
     }
 }

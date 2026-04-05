@@ -2,14 +2,14 @@
 
 use App\Http\Controllers\Auth\VerifyEmailController;
 use Illuminate\Support\Facades\Route;
-use Livewire\Volt\Volt;
+use Livewire\Volt\Volt;;
 
 Route::middleware('guest')->group(function () {
-    Volt::route('register', 'pages.auth.register')
-        ->name('register');
+    // Sửa lại cách gọi route register như thế này:
+    Volt::route('register', 'pages.auth.register')->name('register');
 
-    Volt::route('login', 'pages.auth.login')
-        ->name('login');
+    // Tương tự cho login nếu bị lỗi:
+    Volt::route('login', 'pages.auth.login')->name('login');
 
     Volt::route('forgot-password', 'pages.auth.forgot-password')
         ->name('password.request');

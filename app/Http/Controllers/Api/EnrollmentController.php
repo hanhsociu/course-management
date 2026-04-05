@@ -20,6 +20,14 @@ class EnrollmentController extends Controller
         $user = $request->user(); // Lấy thông tin user đang đăng nhập
         $courseId = $request->course_id;
 
+        $course = Course::findOrFail($courseId);
+        if ((float) $course->price > 0) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Khóa học trả phí: vui lòng thanh toán qua website (PayOS).',
+            ], 402);
+        }
+
         // 2. Kiểm tra user đã đăng ký khóa này chưa
         $isEnrolled = Enrollment::where('user_id', $user->id)
             ->where('course_id', $courseId)

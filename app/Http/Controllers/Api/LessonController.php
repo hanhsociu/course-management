@@ -10,10 +10,25 @@ use Illuminate\Http\Request;
 class LessonController extends Controller
 {
     // 1. Lấy danh sách bài học (Dùng chung cho cả User và Admin)
-    public function index(Course $course)
+    public function index(Request $request, Course $course)
     {
-        $lessons = $course->lessons()->orderBy('order')->get();
-        return response()->json(['success' => true, 'data' => $lessons]);
+        $request->validate([
+            'per_page' => 'nullable|integer|min:1|max:100',
+            'page' => 'nullable|integer|min:1',
+        ]);
+
+        $perPage = min((int) $request->input('per_page', 15), 100);
+
+        $lessons = $course->lessons()
+            ->orderBy('order')
+            ->paginate($perPage)
+            ->withQueryString();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Lấy danh sách bài học thành công',
+            'data' => $lessons,
+        ]);
     }
 
     // 2. Thêm bài học mới (Chỉ Admin)
@@ -23,10 +38,11 @@ class LessonController extends Controller
             'course_id' => 'required|exists:courses,id',
             'title'     => 'required|string|max:255',
             'content'   => 'required|string',
-            'order'     => 'integer'
+            'order'     => 'integer',
+            'is_preview' => 'boolean',
         ]);
 
-        $lesson = Lesson::create($request->all());
+        $lesson = Lesson::create($request->only(['course_id', 'title', 'content', 'order', 'is_preview', 'video_url']));
 
         return response()->json([
             'success' => true,
@@ -41,10 +57,11 @@ class LessonController extends Controller
         $request->validate([
             'title'   => 'string|max:255',
             'content' => 'string',
-            'order'   => 'integer'
+            'order'   => 'integer',
+            'is_preview' => 'boolean',
         ]);
 
-        $lesson->update($request->all());
+        $lesson->update($request->only(['title', 'content', 'order', 'is_preview', 'video_url']));
 
         return response()->json([
             'success' => true,

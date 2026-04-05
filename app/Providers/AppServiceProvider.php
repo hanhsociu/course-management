@@ -12,7 +12,27 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->singleton(\PayOS\PayOS::class, function () {
+            $cfg = config('services.payos', []);
+
+            $clientId = $cfg['client_id'] ?? null;
+            $apiKey = $cfg['api_key'] ?? null;
+            $checksumKey = $cfg['checksum_key'] ?? null;
+
+            if (!is_string($clientId) || $clientId === ''
+                || !is_string($apiKey) || $apiKey === ''
+                || !is_string($checksumKey) || $checksumKey === '') {
+                throw new \RuntimeException(
+                    'PayOS: thiếu PAYOS_CLIENT_ID / PAYOS_API_KEY / PAYOS_CHECKSUM_KEY (kiểm tra .env và chạy php artisan config:clear).'
+                );
+            }
+
+            return new \PayOS\PayOS(
+                clientId: $clientId,
+                apiKey: $apiKey,
+                checksumKey: $checksumKey,
+            );
+        });
     }
 
     /**
