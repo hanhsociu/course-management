@@ -23,6 +23,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'verified'     => \App\Http\Middleware\EnsureEmailIsVerified::class,
             'check.enroll' => \App\Http\Middleware\CheckEnrollment::class,
+            'course.learn' => \App\Http\Middleware\EnsureCourseLearnAccess::class,
             'admin'        => \App\Http\Middleware\CheckAdmin::class, // Đổi từ check.admin thành admin
         ]);
 

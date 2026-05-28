@@ -3,24 +3,30 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @deprecated Bảng `progresses` — dùng LessonProgress thay thế.
+ */
 class Progress extends Model
 {
-    // BẮT BUỘC THÊM DÒNG NÀY ĐỂ ÉP LARAVEL CHỈ ĐÚNG BẢNG
     protected $table = 'progresses';
 
     protected $fillable = ['user_id', 'lesson_id', 'completed_at'];
 
-    protected $casts = [
-        'completed_at' => 'datetime',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'completed_at' => 'datetime',
+        ];
+    }
 
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function lesson()
+    public function lesson(): BelongsTo
     {
         return $this->belongsTo(Lesson::class);
     }

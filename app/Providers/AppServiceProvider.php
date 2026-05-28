@@ -2,7 +2,10 @@
 
 namespace App\Providers;
 
+use App\Models\Course;
 use Illuminate\Auth\Notifications\ResetPassword;
+use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -40,6 +43,19 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Paginator::useBootstrapFour();
+
+        Route::bind('course', function (string $value) {
+            return Course::query()
+                ->where(function ($query) use ($value) {
+                    $query->where('slug', $value);
+                    if (ctype_digit($value)) {
+                        $query->orWhere('id', $value);
+                    }
+                })
+                ->firstOrFail();
+        });
+
         ResetPassword::createUrlUsing(function (object $notifiable, string $token) {
             return config('app.frontend_url')."/password-reset/$token?email={$notifiable->getEmailForPasswordReset()}";
         });

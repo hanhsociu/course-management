@@ -69,6 +69,7 @@
                                 <th class="p-4 font-bold uppercase tracking-wider text-indigo-900 text-xs">Học viên</th>
                                 <th class="p-4 font-bold uppercase tracking-wider text-indigo-900 text-xs">Email</th>
                                 <th class="p-4 font-bold uppercase tracking-wider text-indigo-900 text-xs">Khóa học</th>
+                                <th class="p-4 font-bold uppercase tracking-wider text-indigo-900 text-xs">Thanh toán</th>
                                 <th class="p-4 font-bold uppercase tracking-wider text-indigo-900 text-xs">Ngày đăng ký</th>
                             </tr>
                         </thead>
@@ -96,13 +97,37 @@
                                         {{ $row->course?->title ?? '—' }}
                                     </span>
                                 </td>
+                                <td class="p-4">
+                                    @php
+                                        $key = $row->user_id . '-' . $row->course_id;
+                                        $paymentStatus = $paymentStatuses[$key] ?? null;
+                                    @endphp
+
+                                    @if($paymentStatus === 'paid')
+                                        <span class="inline-flex items-center rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-bold text-emerald-700 ring-1 ring-emerald-200">
+                                            Đã thanh toán
+                                        </span>
+                                    @elseif($paymentStatus === 'pending')
+                                        <span class="inline-flex items-center rounded-full bg-amber-50 px-2.5 py-1 text-xs font-bold text-amber-700 ring-1 ring-amber-200">
+                                            Chờ thanh toán
+                                        </span>
+                                    @elseif($paymentStatus === 'cancelled')
+                                        <span class="inline-flex items-center rounded-full bg-rose-50 px-2.5 py-1 text-xs font-bold text-rose-700 ring-1 ring-rose-200">
+                                            Đã hủy
+                                        </span>
+                                    @else
+                                        <span class="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-1 text-xs font-bold text-slate-600 ring-1 ring-slate-200">
+                                            Miễn phí / Admin cấp quyền
+                                        </span>
+                                    @endif
+                                </td>
                                 <td class="p-4 text-gray-500 font-mono text-[13px]">
                                     {{ $row->created_at?->format('d/m/Y H:i:s') }}
                                 </td>
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="4" class="p-10 text-center text-gray-400 text-base font-semibold bg-indigo-50/60">
+                                <td colspan="5" class="p-10 text-center text-gray-400 text-base font-semibold bg-indigo-50/60">
                                     <svg class="w-10 h-10 mx-auto mb-3 text-indigo-300" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m0-4h.01M21 12.72a9 9 0 11-18 0 9 9 0 0118 0z"/>
                                     </svg>

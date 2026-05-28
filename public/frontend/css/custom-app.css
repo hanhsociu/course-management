@@ -1,0 +1,108 @@
+/* Overrides & helpers for Laravel course-management + ULearn theme */
+
+.se-pre-con {
+    background: #fff center no-repeat;
+}
+
+.ulearn-brand-text {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: #14bef0;
+    letter-spacing: -0.02em;
+    text-decoration: none !important;
+}
+
+.ulearn-brand-text--footer {
+    font-size: 1.5rem;
+    display: inline-block;
+    margin-bottom: 0.5rem;
+}
+
+.ulearn-top-nav a {
+    color: #414146;
+    font-weight: 600;
+    padding: 0.35rem 1rem;
+    text-decoration: none;
+}
+
+.ulearn-top-nav a:hover,
+.ulearn-top-nav a.active {
+    color: #14bef0;
+}
+
+.ulearn-user-trigger {
+    cursor: pointer;
+    display: inline-block;
+    margin-top: 0.65rem;
+    font-weight: 600;
+}
+
+.ulearn-page-header {
+    margin-top: 60px;
+    padding: 1.5rem 0;
+    background: #f8fafb;
+    border-bottom: 1px solid rgba(216, 216, 216, 0.5);
+}
+
+.course-thumb-placeholder {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    background: linear-gradient(135deg, #14bef0 0%, #0a8fb8 50%, #414146 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 3rem;
+    font-weight: 800;
+}
+
+.ulearn-admin-card {
+    border: 1px solid #e8e8e8;
+    border-radius: 4px;
+    padding: 1.25rem;
+    background: #fff;
+    height: 100%;
+    transition: box-shadow 0.2s;
+    text-decoration: none !important;
+    color: inherit;
+    display: block;
+}
+
+.ulearn-admin-card:hover {
+    box-shadow: 0 4px 16px rgba(20, 190, 240, 0.15);
+}
+
+.learning-player-wrap {
+    background: #1a1a2e;
+    min-height: 360px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #94a3b8;
+}
+
+.learning-sidebar {
+    background: #f8fafb;
+    border-left: 1px solid #e8e8e8;
+    max-height: calc(100vh - 60px);
+    overflow-y: auto;
+}
+
+.learning-lesson-item {
+    display: block;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #eee;
+    color: #414146;
+    text-decoration: none !important;
+}
+
+.learning-lesson-item:hover,
+.learning-lesson-item.active {
+    background: #e8f9fd;
+    color: #14bef0;
+}
+
+.learning-lesson-item.completed .fa-check-circle {
+    color: #28a745;
+}

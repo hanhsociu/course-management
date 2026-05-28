@@ -30,14 +30,20 @@ class PayOSPaymentController extends Controller
         }
 
         if ($user->isAdmin()) {
-            $user->enrolledCourses()->syncWithoutDetaching([$course->id]);
+            $user->enrolledCourses()->syncWithoutDetaching([
+                $course->id => [
+                    'status' => \App\Models\Enrollment::STATUS_ACTIVE,
+                    'progress_percent' => 0,
+                    'enrolled_at' => now(),
+                ],
+            ]);
 
-            return redirect()->route('learning.view', $course)
+            return redirect()->route('courses.learn', $course)
                 ->with('message', 'Admin: đã mở khóa học.');
         }
 
         if ($user->enrolledCourses->contains($course->id)) {
-            return redirect()->route('learning.view', $course)
+            return redirect()->route('courses.learn', $course)
                 ->with('info', 'Bạn đã sở hữu khóa học này.');
         }
 
@@ -48,9 +54,15 @@ class PayOSPaymentController extends Controller
         }
 
         if ($amount <= 0) {
-            $user->enrolledCourses()->syncWithoutDetaching([$course->id]);
+            $user->enrolledCourses()->syncWithoutDetaching([
+                $course->id => [
+                    'status' => \App\Models\Enrollment::STATUS_ACTIVE,
+                    'progress_percent' => 0,
+                    'enrolled_at' => now(),
+                ],
+            ]);
 
-            return redirect()->route('learning.view', $course)
+            return redirect()->route('courses.learn', $course)
                 ->with('message', 'Đăng ký khóa miễn phí thành công!');
         }
 
@@ -58,6 +70,12 @@ class PayOSPaymentController extends Controller
             return redirect()->route('courses.show', $course)
                 ->with('error', 'Khóa học không khả dụng.');
         }
+
+        // Đóng các đơn pending cũ của cùng user/khóa để tránh tồn nhiều đơn chờ thanh toán.
+        CoursePayment::where('user_id', $user->id)
+            ->where('course_id', $course->id)
+            ->where('status', 'pending')
+            ->update(['status' => 'cancelled']);
 
         $payOS = $this->payOSClient();
 
@@ -144,15 +162,15 @@ class PayOSPaymentController extends Controller
 
         $payment = CoursePayment::where('order_code', $orderCode)->firstOrFail();
 
-        if (Auth::id() !== $payment->user_id) {
-            abort(403);
-        }
-
         $cancel = filter_var($request->query('cancel'), FILTER_VALIDATE_BOOLEAN);
         $status = $request->query('status');
         $code = $request->query('code');
 
         if ($cancel || $status === 'CANCELLED') {
+            if ($payment->status === 'pending') {
+                $payment->update(['status' => 'cancelled']);
+            }
+
             return redirect()->route('courses.show', $payment->course_id)
                 ->with('info', 'Bạn đã hủy thanh toán.');
         }
@@ -160,8 +178,13 @@ class PayOSPaymentController extends Controller
         if ($code === '00' && $status === 'PAID') {
             $this->coursePaymentService->markPaidAndEnroll($payment);
 
-            return redirect()->route('learning.view', $payment->course_id)
-                ->with('message', 'Thanh toán thành công! Bắt đầu học ngay.');
+            if (Auth::id() === $payment->user_id) {
+                return redirect()->route('courses.learn', $payment->course_id)
+                    ->with('message', 'Thanh toán thành công! Bắt đầu học ngay.');
+            }
+
+            return redirect()->route('courses.show', $payment->course_id)
+                ->with('message', 'Thanh toán thành công. Vui lòng đăng nhập lại để vào phòng học.');
         }
 
         try {
@@ -170,8 +193,13 @@ class PayOSPaymentController extends Controller
             if ($link->status === PaymentLinkStatus::PAID) {
                 $this->coursePaymentService->markPaidAndEnroll($payment);
 
-                return redirect()->route('learning.view', $payment->course_id)
-                    ->with('message', 'Thanh toán thành công! Bắt đầu học ngay.');
+                if (Auth::id() === $payment->user_id) {
+                    return redirect()->route('courses.learn', $payment->course_id)
+                        ->with('message', 'Thanh toán thành công! Bắt đầu học ngay.');
+                }
+
+                return redirect()->route('courses.show', $payment->course_id)
+                    ->with('message', 'Thanh toán thành công. Vui lòng đăng nhập lại để vào phòng học.');
             }
         } catch (APIException $e) {
             Log::notice('PayOS return: chưa xác nhận PAID: '.$e->getMessage());
@@ -186,7 +214,11 @@ class PayOSPaymentController extends Controller
         $orderCode = $request->integer('orderCode');
         if ($orderCode) {
             $payment = CoursePayment::where('order_code', $orderCode)->first();
-            if ($payment && Auth::id() === $payment->user_id) {
+            if ($payment) {
+                if ($payment->status === 'pending') {
+                    $payment->update(['status' => 'cancelled']);
+                }
+
                 return redirect()->route('courses.show', $payment->course_id)
                     ->with('info', 'Bạn đã hủy thanh toán.');
             }

@@ -1,34 +1,53 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="csrf-token" content="{{ csrf_token() }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>{{ config('app.name', 'Laravel') }}</title>
+    <link rel="stylesheet" href="{{ asset('frontend/css/bootstrap.css') }}">
+    <link rel="stylesheet" href="{{ asset('frontend/css/style.css') }}">
+    <link rel="stylesheet" href="{{ asset('frontend/css/font-awesome.css') }}">
+    <link rel="stylesheet" href="{{ asset('vendor/toastr/toastr.min599c.css') }}">
+    <link rel="stylesheet" href="{{ asset('frontend/css/custom-app.css') }}">
+    @livewireStyles
+</head>
+<body>
+<div class="se-pre-con"></div>
+<div class="container-fluid p-0 home-content container-top-border">
+    <div class="container">
+        <nav class="navbar clearfix secondary-nav pt-0 pb-0 login-page-seperator" style="margin-top: 60px;">
+            <ul class="list mt-0">
+                <li><a href="{{ route('login') }}" class="{{ request()->routeIs('login') ? 'active' : '' }}">Đăng nhập</a></li>
+                <li><a href="{{ route('register') }}" class="{{ request()->routeIs('register') ? 'active' : '' }}">Đăng ký</a></li>
+            </ul>
+        </nav>
 
-        <title>{{ config('app.name', 'Laravel') }}</title>
-
-        <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=plus-jakarta-sans:400,500,600,700&family=figtree:400,500,600&display=swap" rel="stylesheet" />
-
-        <!-- Scripts -->
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
-    </head>
-    <body class="font-sans antialiased text-slate-900">
-        <div class="guest-shell">
-            <div class="relative z-10 flex flex-col items-center w-full max-w-md pt-8 sm:pt-0">
-                <a href="/" wire:navigate class="mb-8 inline-flex rounded-2xl border border-slate-200/80 bg-white/70 p-4 shadow-soft backdrop-blur-sm transition hover:border-indigo-200/80 hover:shadow-card">
-                    <x-application-logo class="h-12 w-auto fill-current text-indigo-600" />
-                </a>
-
-                <div class="guest-card">
+        <div class="row mb-5">
+            <div class="col-xl-6 col-lg-6 col-md-6 vertical-align d-none d-lg-block text-center">
+                <div class="course-thumb-placeholder mx-auto" style="max-width: 400px; height: 400px; border-radius: 8px;">
+                    <i class="fa fa-graduation-cap" style="font-size: 5rem;"></i>
+                </div>
+            </div>
+            <div class="col-xl-6 offset-xl-0 col-lg-6 offset-lg-0 col-md-8 offset-md-2">
+                <div class="rightRegisterForm">
                     {{ $slot }}
                 </div>
-
-                <p class="relative z-10 mt-8 text-center text-sm text-slate-500">
-                    <a href="/" wire:navigate class="font-medium text-indigo-600 hover:text-indigo-500 transition">← Về trang chủ</a>
-                </p>
             </div>
         </div>
-    </body>
+
+        <p class="text-center pb-4">
+            <a href="{{ route('catalog') }}" class="forgot-text">&larr; Về trang chủ</a>
+        </p>
+    </div>
+</div>
+
+<script src="{{ asset('frontend/js/jquery-3.3.1.min.js') }}"></script>
+<script src="{{ asset('frontend/js/bootstrap.min.js') }}"></script>
+<script src="{{ asset('vendor/toastr/toastr.min599c.js') }}"></script>
+<script>
+$(window).on('load', function () { $('.se-pre-con').fadeOut('slow'); });
+</script>
+@livewireScripts
+</body>
 </html>

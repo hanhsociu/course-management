@@ -31,7 +31,6 @@ class CourseController extends Controller
         ]);
     }
 
-    // ... code hàm index cũ của bạn ...
 
     // Hàm Tạo khóa học mới (Chỉ Admin)
     public function store(Request $request)
@@ -82,7 +81,7 @@ class CourseController extends Controller
     // Xóa khóa học (Chỉ Admin)
     public function destroy(Course $course)
     {
-        // Vì bạn dùng SoftDeletes nên nó sẽ tự động chuyển vào "thùng rác"
+        // dùng SoftDeletes nên nó sẽ tự động chuyển vào "thùng rác"
         $course->delete();
 
         return response()->json([

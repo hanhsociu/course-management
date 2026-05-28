@@ -21,29 +21,20 @@ new class extends Component
         <div class="flex justify-between h-16">
             <div class="flex">
                 <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}" wire:navigate class="rounded-lg p-1 -m-1 transition hover:bg-slate-100/80">
+                    <a href="{{ route('catalog') }}" wire:navigate class="rounded-lg p-1 -m-1 transition hover:bg-slate-100/80">
                         <x-application-logo class="block h-9 w-auto fill-current text-indigo-600" />
                     </a>
                 </div>
 
                 <div class="hidden items-center gap-1 sm:ms-10 sm:flex">
                     @auth
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" wire:navigate>
-                        {{ __('Dashboard') }}
+                    <x-nav-link :href="route('catalog')" :active="request()->routeIs('catalog')" wire:navigate>
+                        {{ __('Trang chủ') }}
                     </x-nav-link>
 
                     @if(auth()->user()->isAdmin())
-                    <x-nav-link :href="route('admin.courses')"
-                        :active="request()->routeIs('admin.courses') || request()->routeIs('admin.courses.lessons')"
-                        wire:navigate>
-                        {{ __('Khóa học') }}
-                    </x-nav-link>
-                    <x-nav-link :href="route('admin.users')" :active="request()->routeIs('admin.users')" wire:navigate>
-                        {{ __('Người dùng') }}
-                    </x-nav-link>
-                    <x-nav-link :href="route('admin.enrollments')"
-                        :active="request()->routeIs('admin.enrollments')" wire:navigate>
-                        {{ __('Đăng ký') }}
+                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard') || request()->routeIs('admin.*')" wire:navigate>
+                        {{ __('Quản trị') }}
                     </x-nav-link>
                     @else
                     <x-nav-link :href="route('my-courses')" :active="request()->routeIs('my-courses')" wire:navigate>
@@ -119,22 +110,12 @@ new class extends Component
     <div :class="{'block': open, 'hidden': ! open}" class="hidden border-t border-slate-200/80 bg-white/95 backdrop-blur-md sm:hidden">
         <div class="space-y-0.5 px-2 py-3">
             @auth
-            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" wire:navigate>
-                {{ __('Dashboard') }}
+            <x-responsive-nav-link :href="route('catalog')" :active="request()->routeIs('catalog')" wire:navigate>
+                {{ __('Trang chủ') }}
             </x-responsive-nav-link>
             @if(auth()->user()->isAdmin())
-            <x-responsive-nav-link :href="route('admin.courses')"
-                :active="request()->routeIs('admin.courses') || request()->routeIs('admin.courses.lessons')"
-                wire:navigate>
-                {{ __('Khóa học') }}
-            </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('admin.users')" :active="request()->routeIs('admin.users')"
-                wire:navigate>
-                {{ __('Người dùng') }}
-            </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('admin.enrollments')"
-                :active="request()->routeIs('admin.enrollments')" wire:navigate>
-                {{ __('Đăng ký') }}
+            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard') || request()->routeIs('admin.*')" wire:navigate>
+                {{ __('Quản trị') }}
             </x-responsive-nav-link>
             @else
             <x-responsive-nav-link :href="route('my-courses')" :active="request()->routeIs('my-courses')"

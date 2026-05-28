@@ -3,25 +3,50 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Enrollment extends Model
 {
-    protected $fillable = ['user_id', 'course_id', 'enrolled_at'];
+    public const STATUS_ACTIVE = 'active';
 
-    // Ép kiểu ngày tháng
-    protected $casts = [
-        'enrolled_at' => 'datetime',
+    public const STATUS_COMPLETED = 'completed';
+
+    public const STATUS_CANCELLED = 'cancelled';
+
+    public const STATUS_EXPIRED = 'expired';
+
+    protected $fillable = [
+        'user_id',
+        'course_id',
+        'status',
+        'progress_percent',
+        'enrolled_at',
+        'completed_at',
+        'expired_at',
     ];
 
-    // Enrollment thuộc về 1 User [cite: 25]
-    public function user()
+    protected function casts(): array
+    {
+        return [
+            'progress_percent' => 'integer',
+            'enrolled_at' => 'datetime',
+            'completed_at' => 'datetime',
+            'expired_at' => 'datetime',
+        ];
+    }
+
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    // Enrollment thuộc về 1 Course [cite: 25]
-    public function course()
+    public function course(): BelongsTo
     {
         return $this->belongsTo(Course::class);
+    }
+
+    public function scopeActive($query)
+    {
+        return $query->where('status', self::STATUS_ACTIVE);
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\CoursePayment;
+use App\Models\Enrollment;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -19,7 +20,13 @@ class CoursePaymentService
                 return;
             }
 
-            $payment->user->enrolledCourses()->syncWithoutDetaching([$payment->course_id]);
+            $payment->user->enrolledCourses()->syncWithoutDetaching([
+                $payment->course_id => [
+                    'status' => Enrollment::STATUS_ACTIVE,
+                    'progress_percent' => 0,
+                    'enrolled_at' => now(),
+                ],
+            ]);
 
             $payment->update([
                 'status' => 'paid',

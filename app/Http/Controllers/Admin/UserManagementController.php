@@ -12,7 +12,7 @@ class UserManagementController extends Controller
     {
         $request->validate([
             'q' => 'nullable|string|max:255',
-            'role' => 'nullable|in:admin,user',
+            'role' => 'nullable|in:admin,instructor,student',
         ]);
 
         $query = User::query()->orderByDesc('created_at');
